@@ -1,2 +1,7 @@
-# Rank-Supervised-Contrastive-Learning-for-Time-Series-Classification
-Official reponsitory for "Rank Supervised Contrastive Learning for Time Series Classification"
+# RankSCL
+Official reponsitory for "Rank Supervised Contrastive Learning for Time Series Classificatio"
+
+## 
+
+## 
+
