@@ -1,0 +1,1 @@
+python ../main.py --path UEA --cuda  --device 3 --model FCN --distance EU --aug_positives 5 --seed 1 --lr 0.0001 --weight_decay 0.0005 --epochs_up 100 --epochs_down 100 --loss rank --dataset ArticularyWordRecognition --batchsiz 4
