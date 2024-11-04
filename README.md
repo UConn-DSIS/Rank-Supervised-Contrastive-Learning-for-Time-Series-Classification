@@ -1,5 +1,5 @@
 # RankSCL
-This is the official repository of Rank Supervised Contrastive Learning for Time Series Classification, which was published in ICDM 2024 [https://arxiv.org/abs/2401.18057](https://arxiv.org/abs/2401.18057). We will keep maintaining this repository to faciliate the development of continual graph learning, and we appreciate any comment on improving our RankSCL! 
+This is the official repository of Rank Supervised Contrastive Learning for Time Series Classification, which was published in ICDM 2024 [https://arxiv.org/abs/2401.18057](https://arxiv.org/abs/2401.18057). We will keep maintaining this repository to faciliate the development of time series analysis, and we appreciate any comment on improving our RankSCL! 
 ```
 @misc{ren2024ranksupervisedcontrastivelearning,
       title={Rank Supervised Contrastive Learning for Time Series Classification}, 
