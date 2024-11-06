@@ -93,30 +93,7 @@ if __name__ == '__main__':
     #plot_TSNE(train_all,train_labels,file_path='/home/qir21001/AAAI2022/TSNE/'+args.dataset+'_Raw_data',nclasses=nclasses)
     device = torch.device("cuda:"+str(args.device) if torch.cuda.is_available() else "cpu")
 
-    if(args.model =='ts2vec'):
-        
-        model = TS2Vec(
-        input_dims=train_all.shape[1],
-        device= args.device,
-        output_dims=320, 
-        hidden_dims=64, 
-        depth=10,  
-        lr=args.lr, 
-        batch_size=args.batchsize,
-        n_negatives=args.n_negatives,
-        aug_positives=args.aug_positives, 
-        number = args.number,
-        distance =args.distance)
-        
-        loss_log = model.fit(
-        train_all,
-        train_labels,
-        logger,
-        loss = args.loss,
-        n_epochs=None,
-        n_iters=None,
-        verbose=True)
-        out, eval_res = eval_classification(model, train_all, train_labels, test, test_labels, args.dataset,logger,eval_protocol='svm')
+    
     
     train_all = torch.from_numpy(train_all).to(torch.float)
     train_labels = torch.from_numpy(train_labels).to(torch.float)
@@ -137,14 +114,13 @@ if __name__ == '__main__':
     # According to the model to train the dataset
     # plot the TSNE before training:
     #plot_TSNE(train_all,train_labels,file_path='/home/qir21001/AAAI2022/TSNE/Ablation/'+args.dataset+'_'+str(args.batchsize)+'_'+args.model+str(args.aug_positives)+'_Raw_data',nclasses=nclasses)
-    #train the encoder
-    if(args.model!='ts2vec'):
+
         
-        train_encoder(args.dataset,train_loader,args.model,args.device,logger=logger,train=train_all,train_labels=train_labels,nclasses=nclasses,loss=args.loss,seed=args.seed,lr=args.lr,aug_positives=args.aug_positives,weight_decay=args.weight_decay,epochs_up=args.epochs_up,batchsize=args.batchsize,distance=args.distance)
-        print("traing_finished: save model")
-        save_dir = '/home/qir21001/AAAI2022/result_model/'+args.dataset+'_'+args.model+'_'+str(args.batchsize)+'_'+str(args.aug_positives)+'_'+str(args.lr)+'_'+str(args.epochs_up)+'_'+str(args.seed)
-        state_dict = torch.load(os.path.join(save_dir,'Rank_model.pt'))    
-        model = define_model(args.model,input_dim = train_all.shape[1])
+    train_encoder(args.dataset,train_loader,args.model,args.device,logger=logger,train=train_all,train_labels=train_labels,nclasses=nclasses,loss=args.loss,seed=args.seed,lr=args.lr,aug_positives=args.aug_positives,weight_decay=args.weight_decay,epochs_up=args.epochs_up,batchsize=args.batchsize,distance=args.distance)
+    print("traing_finished: save model")
+    save_dir = '/home/qir21001/AAAI2022/result_model/'+args.dataset+'_'+args.model+'_'+str(args.batchsize)+'_'+str(args.aug_positives)+'_'+str(args.lr)+'_'+str(args.epochs_up)+'_'+str(args.seed)
+    state_dict = torch.load(os.path.join(save_dir,'Rank_model.pt'))    
+    model = define_model(args.model,input_dim = train_all.shape[1])
  
         # for k in list(state_dict.keys()):                     
         #     if k.startswith('backbone.'):
@@ -152,20 +128,20 @@ if __name__ == '__main__':
         #     # remove prefix
         #             state_dict[k[len("backbone."):]] = state_dict[k]
         #     del state_dict[k]
-        log = model.load_state_dict(state_dict, strict=False)
-        # for name, param in model.named_parameters():
-        #     if name not in ['fc.weight', 'fc.bias']:
-        #         param.requires_grad = False
-        #parameters = list(filter(lambda p: p.requires_grad, model.parameters())) #
-        model = model.to(device)
-        # plot the TSNE after the encoder training:
-        h = train_model(train_all,args.model,model,device,encode=True)
-        h = F.normalize(h,dim=1)
-        #plot_TSNE(h,train_labels,file_path='/home/qir21001/AAAI2022/TSNE/Ablation/'+args.dataset+'_'+str(args.batchsize)+'_'+args.model+str(args.aug_positives)+'_Encoder_repre',nclasses=nclasses)
-        #train_label = train_label.type(torch.LongTensor)
-        #train_dataset = torch.utils.data.TensorDataset(train_set,train_label)
-        #train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batchsize, shuffle=True,num_workers=12, pin_memory=True, drop_last=True)
-        # if hasattr(torch.cuda, 'empty_cache'):
-        # 	torch.cuda.empty_cache()
-        #classification(args.dataset,nclasses,train_loader,train_all,train_labels,val_set,val_label,test,test_labels,args.device,model,args.model,classifier,logger,epochs=args.epochs_down,lr_model=1e-4,lr_classifier=1e-3,weight_decay=0.0008)
-        out, eval_res = eval_classification(model, args.model, train_all, train_labels, test, test_labels, args.dataset,logger,args.device,eval_protocol='svm')
+    log = model.load_state_dict(state_dict, strict=False)
+    # for name, param in model.named_parameters():
+    #     if name not in ['fc.weight', 'fc.bias']:
+    #         param.requires_grad = False
+    #parameters = list(filter(lambda p: p.requires_grad, model.parameters())) #
+    model = model.to(device)
+    # plot the TSNE after the encoder training:
+    h = train_model(train_all,args.model,model,device,encode=True)
+    h = F.normalize(h,dim=1)
+    #plot_TSNE(h,train_labels,file_path='/home/qir21001/AAAI2022/TSNE/Ablation/'+args.dataset+'_'+str(args.batchsize)+'_'+args.model+str(args.aug_positives)+'_Encoder_repre',nclasses=nclasses)
+    #train_label = train_label.type(torch.LongTensor)
+    #train_dataset = torch.utils.data.TensorDataset(train_set,train_label)
+    #train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batchsize, shuffle=True,num_workers=12, pin_memory=True, drop_last=True)
+    # if hasattr(torch.cuda, 'empty_cache'):
+    # 	torch.cuda.empty_cache()
+    #classification(args.dataset,nclasses,train_loader,train_all,train_labels,val_set,val_label,test,test_labels,args.device,model,args.model,classifier,logger,epochs=args.epochs_down,lr_model=1e-4,lr_classifier=1e-3,weight_decay=0.0008)
+    out, eval_res = eval_classification(model, args.model, train_all, train_labels, test, test_labels, args.dataset,logger,args.device,eval_protocol='svm')
